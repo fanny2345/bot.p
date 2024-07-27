@@ -1,0 +1,81 @@
+import discord
+from discord.ext import commands
+import random 
+import os
+import requests
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix='$', intents=intents)
+
+@bot.event
+async def on_ready():
+    print(f'We have logged in as {bot.user}')
+
+@bot.command()
+async def hello(ctx):
+    await ctx.send(f'Hola, soy un bot {bot.user}!')
+
+@bot.command()
+async def heh(ctx, count_heh = 5):
+    await ctx.send("he" * count_heh)
+    
+@bot.command() 
+async def letras(ctx,numero = "bueno"):
+    juego = len(numero)
+    await ctx.send(f"El numero de letras es:{juego}")
+    
+@bot.command()
+async def mem(ctx):
+    x = random.choice(os.listdir("valen/imagen"))
+    with open(f'valen/imagen/{x}', 'rb') as f:
+        # ¡Vamos a almacenar el archivo de la biblioteca Discord convertido en esta variable!
+        picture = discord.File(f)
+    # A continuación, podemos enviar este archivo como parámetro.
+    await ctx.send(file=picture)
+    
+def get_duck_image_url():    
+    url = 'https://random-d.uk/api/random'
+    res = requests.get(url)
+    data = res.json()
+    return data['url']
+
+
+@bot.command('duck')
+async def duck(ctx):
+    '''Una vez que llamamos al comando duck, 
+    el programa llama a la función get_duck_image_url'''
+    image_url = get_duck_image_url()
+    await ctx.send(image_url)
+    
+@bot.command()
+async def reciclar(ctx):
+    await ctx.send("Para reciclar y no contaminar puedes trirar la basura a su cubo correspondiente como los cristales al verde, los papeles al azul, los plasticos al amarillo y los residuos organicos al gris")
+    
+mensajes_reciclaje = [
+    "Recuerda separar tus residuos: papel y cartón al contenedor azul.",
+    "¡No olvides! Los envases de plástico van al contenedor amarillo.",
+    "Los residuos orgánicos van al contenedor marrón o verde.",
+    "Las botellas de vidrio se deben reciclar en el contenedor verde.",
+    "Las pilas y baterías se deben llevar a puntos limpios o contenedores especiales.",
+    "El aceite usado no se tira por el desagüe, recógelo y llévalo a un punto limpio.",
+    "Los aparatos electrónicos se reciclan en puntos de recogida específicos."
+]
+
+@bot.command()
+async def datos_medioambiente(ctx):
+    mensaje = random.choice(mensajes_reciclaje)
+    await ctx.send(mensaje)
+    
+
+@bot.command()
+async def cuidar_el_medioambiente(ctx):
+    await ctx.send("para cuidar el medioambiente puedes priorizar viajar en transporte publico en vez de en el coche o pueden reutilizar cosas que ya no vallan a utilizar como los cartones del papel igienico usarlo para hacer manualidades")
+
+@bot.command()
+async def la_importancia_de_los_arboles(ctx):
+    await ctx.send("los arboles son muy importantes porque nos proporcionan oxigeno asi que puedes ayudar plantando mas arbole y no talandolos")
+
+
+bot.run("MTI1ODkzOTI2NDc1MDg1MDEyMg.GVLsDB.PjmbhENG5rCNKI7ThtYzLxaKJeTMmt9R5SWzKM")
+        
